@@ -75,6 +75,14 @@ export async function userSearch(
   });
 }
 
+export async function freeze(id: number) {
+  return await axiosInstance.get("/user/freeze", {
+    params: {
+      id,
+    },
+  });
+}
+
 export async function updatePasswordCaptcha(email: string) {
   return await axiosInstance.get("/user/admin/update_password/captcha", {
     params: {
