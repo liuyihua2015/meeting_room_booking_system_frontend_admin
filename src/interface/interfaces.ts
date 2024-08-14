@@ -108,3 +108,25 @@ export async function updatePasswordCaptcha(email: string) {
 export async function updatePassword(data: UpdatePassword) {
   return await axiosInstance.post("/user/admin/update_password", data);
 }
+
+export async function meetingRoomList(
+  name: string,
+  capacity: number,
+  equipment: string,
+  pageNo: number,
+  pageSize: number
+) {
+  return await axiosInstance.get("/meeting-room/list", {
+    params: {
+      name,
+      capacity,
+      equipment,
+      pageNo,
+      pageSize,
+    },
+  });
+}
+
+export async function deleteMeetingRoom(id: number) {
+  return await axiosInstance.delete("/meeting-room/" + id);
+}
