@@ -11,6 +11,9 @@ import { ErrorPage } from "./pages/ErrorPage/ErrorPage";
 import { UserManage } from "./pages/UserManage/UserManage";
 import { Login } from "./pages/Login/Login";
 import { Menu } from "./pages/Menu/Menu";
+import { ModifyMenu } from "./pages/ModifyMenu/ModifyMenu";
+import { InfoModify } from "./pages/InfoModify/InfoModify";
+import { PasswordModify } from "./pages/PasswordModify/PasswordModify";
 
 const routes = [
   {
@@ -28,6 +31,20 @@ const routes = [
           },
         ],
       },
+      {
+        path: "/user",
+        element: <ModifyMenu></ModifyMenu>,
+        children: [
+          {
+            path: "info_modify",
+            element: <InfoModify />,
+          },
+          {
+            path: "password_modify",
+            element: <PasswordModify />,
+          },
+        ],
+      },
     ],
   },
   {
@@ -35,7 +52,7 @@ const routes = [
     element: <Login />,
   },
 ];
-const router = createBrowserRouter(routes);
+export const router = createBrowserRouter(routes);
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
