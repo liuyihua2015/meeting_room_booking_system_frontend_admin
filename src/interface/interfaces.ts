@@ -1,8 +1,4 @@
 import axios from "axios";
-// import { RegisterUser } from "../page/register/Register";
-// import { UpdatePassword } from "../page/update_password/UpdatePassword";
-// import { UserInfo } from "../page/update_info/UpdateInfo";
-
 import { message } from "antd";
 
 const axiosInstance = axios.create({
@@ -61,38 +57,28 @@ export async function login(username: string, password: string) {
   });
 }
 
-export async function registerCaptcha(email: string) {
-  return await axiosInstance.get("/user/register-captcha", {
+export async function userSearch(
+  username: string,
+  nickName: string,
+  email: string,
+  pageNo: number,
+  pageSize: number
+) {
+  return await axiosInstance.get("/user/list", {
     params: {
-      address: email,
+      username,
+      nickName,
+      email,
+      pageNo,
+      pageSize,
     },
   });
 }
-
-// export async function register(registerUser: RegisterUser) {
-//   return await axiosInstance.post("/user/register", registerUser);
-// }
 
 export async function updatePasswordCaptcha(email: string) {
-  return await axiosInstance.get("/user/update_password/captcha", {
+  return await axiosInstance.get("/user/admin/update_password/captcha", {
     params: {
       address: email,
     },
   });
 }
-
-// export async function updatePassword(data: UpdatePassword) {
-//   return await axiosInstance.post("/user/update_password", data);
-// }
-
-// export async function getUserInfo() {
-//   return await axiosInstance.get("/user/info");
-// }
-
-// export async function updateInfo(data: UserInfo) {
-//   return await axiosInstance.post("/user/update", data);
-// }
-
-// export async function updateUserInfoCaptcha() {
-//   return await axiosInstance.get("/user/update/captcha");
-// }
