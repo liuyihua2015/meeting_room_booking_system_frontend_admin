@@ -67,12 +67,13 @@ export function PasswordModify() {
   useEffect(() => {
     async function query() {
       const res = await getUserInfo();
+      if (res) {
+        const { data } = res.data;
 
-      const { data } = res.data;
-
-      if (res.status === 201 || res.status === 200) {
-        form.setFieldValue("username", data.username);
-        form.setFieldValue("email", data.email);
+        if (res.status === 201 || res.status === 200) {
+          form.setFieldValue("username", data.username);
+          form.setFieldValue("email", data.email);
+        }
       }
     }
     query();
