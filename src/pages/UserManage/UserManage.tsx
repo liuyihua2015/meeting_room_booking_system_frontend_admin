@@ -4,7 +4,13 @@ import "./UserManage.css";
 import { ColumnsType } from "antd/es/table";
 import { freeze, userSearch } from "../../interface/interfaces";
 import { useForm } from "antd/es/form/Form";
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
 
+// 添加时区和 UTC 插件
+dayjs.extend(utc);
+dayjs.extend(timezone);
 interface SearchUser {
   username: string;
   nickName: string;
@@ -56,6 +62,8 @@ export function UserManage() {
       {
         title: "注册时间",
         dataIndex: "createTime",
+        render: (text) =>
+          dayjs(text).tz("Asia/Shanghai").format("YYYY-MM-DD HH:mm:ss"),
       },
       {
         title: "状态",
@@ -82,13 +90,14 @@ export function UserManage() {
 
   async function freezeUser(id: number) {
     const res = await freeze(id);
-
-    const { data } = res.data;
-    if (res.status === 201 || res.status === 200) {
-      setNum(Math.random());
-      message.success("冻结成功");
-    } else {
-      message.error(data || "系统繁忙，请稍后再试");
+    if (res) {
+      const { data } = res.data;
+      if (res.status === 201 || res.status === 200) {
+        setNum(Math.random());
+        message.success("冻结成功");
+      } else {
+        message.error(data || "系统繁忙，请稍后再试");
+      }
     }
   }
 

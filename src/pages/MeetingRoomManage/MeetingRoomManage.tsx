@@ -13,7 +13,15 @@ import "./meeting_room_manage.css";
 import { ColumnsType } from "antd/es/table";
 import { useForm } from "antd/es/form/Form";
 import { deleteMeetingRoom, meetingRoomList } from "../../interface/interfaces";
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+import { CreateMeetingRoomModal } from "./CreateMeetingRoomModal";
+import { UpdateMeetingRoomModal } from "./UpdateMeetingRoom";
 
+// 添加时区和 UTC 插件
+dayjs.extend(utc);
+dayjs.extend(timezone);
 interface SearchMeetingRoom {
   name: string;
   capacity: number;
@@ -37,10 +45,12 @@ export function MeetingRoomManage() {
   const [pageSize, setPageSize] = useState<number>(10);
   const [total, setTotal] = useState<number>(0);
   const [num, setNum] = useState<number>(0);
-
   const [meetingRoomResult, setMeetingRoomResult] = useState<
     Array<MeetingRoomSearchResult>
   >([]);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
+  const [updateId, setUpdateId] = useState<number>();
 
   const columns: ColumnsType<MeetingRoomSearchResult> = useMemo(
     () => [
@@ -67,10 +77,14 @@ export function MeetingRoomManage() {
       {
         title: "添加时间",
         dataIndex: "createTime",
+        render: (text) =>
+          dayjs(text).tz("Asia/Shanghai").format("YYYY-MM-DD HH:mm:ss"),
       },
       {
         title: "上次更新时间",
         dataIndex: "updateTime",
+        render: (text) =>
+          dayjs(text).tz("Asia/Shanghai").format("YYYY-MM-DD HH:mm:ss"),
       },
       {
         title: "预定状态",
@@ -85,15 +99,27 @@ export function MeetingRoomManage() {
       {
         title: "操作",
         render: (_, record) => (
-          <Popconfirm
-            title="会议室删除"
-            description="确认删除吗？"
-            onConfirm={() => handleDelete(record.id)}
-            okText="Yes"
-            cancelText="No"
-          >
-            <a href="#">删除</a>
-          </Popconfirm>
+          <div>
+            <Popconfirm
+              title="会议室删除"
+              description="确认删除吗？"
+              onConfirm={() => handleDelete(record.id)}
+              okText="Yes"
+              cancelText="No"
+            >
+              <a href="#">删除</a>
+            </Popconfirm>
+            <br />
+            <a
+              href="#"
+              onClick={() => {
+                setIsUpdateModalOpen(true);
+                setUpdateId(record.id);
+              }}
+            >
+              更新
+            </a>
+          </div>
         ),
       },
     ],
@@ -180,7 +206,11 @@ export function MeetingRoomManage() {
             <Button type="primary" htmlType="submit">
               搜索会议室
             </Button>
-            <Button type="primary" style={{ background: "green" }}>
+            <Button
+              type="primary"
+              style={{ background: "green" }}
+              onClick={() => setIsCreateModalOpen(true)}
+            >
               添加会议室
             </Button>
           </Form.Item>
@@ -198,6 +228,27 @@ export function MeetingRoomManage() {
           }}
         />
       </div>
+      {/* 创建弹框 */}
+      <CreateMeetingRoomModal
+        isOpen={isCreateModalOpen}
+        handleClose={() => {
+          setIsCreateModalOpen(false);
+        }}
+        handleSuccess={() => {
+          setNum(Math.random());
+        }}
+      ></CreateMeetingRoomModal>
+      {/* 更新弹框 */}
+      <UpdateMeetingRoomModal
+        id={updateId!}
+        isOpen={isUpdateModalOpen}
+        handleClose={() => {
+          setIsUpdateModalOpen(false);
+        }}
+        handleSuccess={() => {
+          setNum(Math.random());
+        }}
+      ></UpdateMeetingRoomModal>
     </div>
   );
 }

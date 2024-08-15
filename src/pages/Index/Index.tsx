@@ -1,12 +1,18 @@
 import { UserOutlined } from "@ant-design/icons";
 import { Link, Outlet } from "react-router-dom";
 import "./index.css";
+import { useState } from "react";
 
 export function Index() {
+  const [refreshKey, setRefreshKey] = useState(0);
+  const handleNanuItemClick = () => {
+    setRefreshKey(refreshKey + 1);
+  };
+
   return (
-    <div id="index-container">
+    <div id="index-container" key={refreshKey}>
       <div className="header">
-        <Link to="/" className="sys_name">
+        <Link to="/" className="sys_name" onClick={handleNanuItemClick}>
           <h1>会议室预定系统-后台管理</h1>
         </Link>
         <Link to="/user/info_modify">
