@@ -28,7 +28,7 @@ interface SearchMeetingRoom {
   equipment: string;
 }
 
-interface MeetingRoomSearchResult {
+export interface MeetingRoomSearchResult {
   id: number;
   name: string;
   capacity: number;
@@ -54,6 +54,10 @@ export function MeetingRoomManage() {
 
   const columns: ColumnsType<MeetingRoomSearchResult> = useMemo(
     () => [
+      {
+        title: "序号",
+        render: (_, __, index) => (pageNo - 1) * pageSize + index + 1,
+      },
       {
         title: "名称",
         dataIndex: "name",
@@ -206,12 +210,24 @@ export function MeetingRoomManage() {
             <Button type="primary" htmlType="submit">
               搜索会议室
             </Button>
+            <span style={{ marginLeft: 20 }}></span>
             <Button
               type="primary"
               style={{ background: "green" }}
               onClick={() => setIsCreateModalOpen(true)}
             >
               添加会议室
+            </Button>
+            <span style={{ marginLeft: 20 }}></span>
+            <Button
+              type="primary"
+              style={{ background: "red" }}
+              onClick={() => {
+                form.resetFields();
+                setNum(Math.random());
+              }}
+            >
+              重置
             </Button>
           </Form.Item>
         </Form>

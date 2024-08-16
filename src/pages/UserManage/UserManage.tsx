@@ -17,7 +17,7 @@ interface SearchUser {
   email: string;
 }
 
-interface UserSearchResult {
+export interface UserSearchResult {
   id: number;
   username: string;
   nickName: string;
@@ -36,6 +36,10 @@ export function UserManage() {
 
   const columns: ColumnsType<UserSearchResult> = useMemo(
     () => [
+      {
+        title: "序号",
+        render: (_, __, index) => (pageNo - 1) * pageSize + index + 1,
+      },
       {
         title: "用户名",
         dataIndex: "username",
@@ -171,6 +175,17 @@ export function UserManage() {
             <Button type="primary" htmlType="submit">
               搜索用户
             </Button>
+            <span style={{ marginLeft: 20 }}></span>
+            <Button
+              type="primary"
+              style={{ background: "red" }}
+              onClick={() => {
+                form.resetFields();
+                setNum(Math.random());
+              }}
+            >
+              重置
+            </Button>
           </Form.Item>
         </Form>
       </div>
@@ -189,46 +204,3 @@ export function UserManage() {
     </div>
   );
 }
-
-// const columns: ColumnsType<UserSearchResult> = [
-//   {
-//     title: "用户名",
-//     dataIndex: "username",
-//   },
-//   {
-//     title: "头像",
-//     dataIndex: "headPic",
-//     render: (value) => {
-//       return value ? (
-//         <Image width={50} src={`http://localhost:3001/${value}`} />
-//       ) : (
-//         ""
-//       );
-//     },
-//   },
-//   {
-//     title: "昵称",
-//     dataIndex: "nickName",
-//   },
-//   {
-//     title: "邮箱",
-//     dataIndex: "email",
-//   },
-//   {
-//     title: "注册时间",
-//     dataIndex: "createTime",
-//   },
-//   {
-//     title: "操作",
-//     render: (_, record) => (
-//       <a
-//         href="#"
-//         onClick={() => {
-//           freezeUser(record.id);
-//         }}
-//       >
-//         冻结
-//       </a>
-//     ),
-//   },
-// ];
