@@ -2,7 +2,7 @@ import { Button, Form, Input, message, Table, Image, Badge } from "antd";
 import { useEffect, useMemo, useState } from "react";
 import "./UserManage.css";
 import { ColumnsType } from "antd/es/table";
-import { freeze, userSearch } from "../../interface/interfaces";
+import { BASE_URL, freeze, userSearch } from "../../interface/interfaces";
 import { useForm } from "antd/es/form/Form";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
@@ -48,11 +48,7 @@ export function UserManage() {
         title: "头像",
         dataIndex: "headPic",
         render: (value: any) => {
-          return value ? (
-            <Image width={50} src={`http://localhost:3001/${value}`} />
-          ) : (
-            ""
-          );
+          return value ? <Image width={50} src={`${BASE_URL}+${value}`} /> : "";
         },
       },
       {

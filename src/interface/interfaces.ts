@@ -7,9 +7,13 @@ import { UpdateMeetingRoom } from "../pages/MeetingRoomManage/UpdateMeetingRoom"
 import { SearchBooking } from "../pages/BookingManage/BookingManage";
 import dayjs from "dayjs";
 
+// config.js
+export const BASE_URL = "http://localhost:3005";
+export const TIMEOUT = 3000;
+
 const axiosInstance = axios.create({
-  baseURL: "http://localhost:3001/",
-  timeout: 3000,
+  baseURL: BASE_URL,
+  timeout: TIMEOUT,
 });
 
 axiosInstance.interceptors.request.use(function (config) {
