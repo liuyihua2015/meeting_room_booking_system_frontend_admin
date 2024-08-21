@@ -151,19 +151,21 @@ export function MeetingRoomManage() {
         pageSize
       );
 
-      const { data } = res.data;
-      if (res.status === 201 || res.status === 200) {
-        setTotal(data.totalCount);
-        setMeetingRoomResult(
-          data.meetingRooms.map((item: MeetingRoomSearchResult) => {
-            return {
-              key: item.id,
-              ...item,
-            };
-          })
-        );
-      } else {
-        message.error(data || "系统繁忙，请稍后再试");
+      if (res) {
+        const { data } = res.data;
+        if (res.status === 201 || res.status === 200) {
+          setTotal(data.totalCount);
+          setMeetingRoomResult(
+            data.meetingRooms.map((item: MeetingRoomSearchResult) => {
+              return {
+                key: item.id,
+                ...item,
+              };
+            })
+          );
+        } else {
+          message.error(data || "系统繁忙，请稍后再试");
+        }
       }
     },
     [pageNo, pageSize]

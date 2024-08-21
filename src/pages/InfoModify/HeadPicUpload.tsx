@@ -1,8 +1,11 @@
 import { InboxOutlined } from "@ant-design/icons";
 import { message } from "antd";
 import Dragger, { DraggerProps } from "antd/es/upload/Dragger";
-import { BASE_URL } from "../../interface/interfaces";
+import { presignedUrl } from "../../interface/interfaces";
+import axios from "axios";
 
+const OSS_BASE_URL = "http://localhost:9000/";
+const Buckets_Name = "room-system/";
 interface HeadPicUploadProps {
   value?: string;
   onChange?: Function;
@@ -12,11 +15,19 @@ let onChange: Function;
 
 const props: DraggerProps = {
   name: "file",
-  action: BASE_URL + "/user/upload",
+  action: async (file) => {
+    const res = await presignedUrl(file.name);
+    return res.data.data;
+  },
+  async customRequest(options) {
+    const { onSuccess, file, action } = options;
+    const res = await axios.put(action, file);
+    onSuccess!(res.data);
+  },
   onChange(info) {
     const { status } = info.file;
     if (status === "done") {
-      onChange(info.file.response.data);
+      onChange(OSS_BASE_URL + Buckets_Name + info.file.name);
       message.success(`${info.file.name} 文件上传成功`);
     } else if (status === "error") {
       message.error(`${info.file.name} 文件上传失败`);
@@ -38,12 +49,7 @@ export function HeadPicUpload(props: HeadPicUploadProps) {
 
   return props?.value ? (
     <div>
-      <img
-        src={BASE_URL + "/" + props.value}
-        alt="头像"
-        width="100"
-        height="100"
-      />
+      <img src={props.value} alt="头像" width="100" height="100" />
       {dragger}
     </div>
   ) : (

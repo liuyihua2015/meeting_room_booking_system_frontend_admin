@@ -30,15 +30,29 @@ export function InfoModify() {
   const onFinish = useCallback(async (values: UserInfo) => {
     const res = await updateInfo(values);
 
-    if (res.status === 201 || res.status === 200) {
-      const { message: msg, data } = res.data;
-      if (msg === "success") {
-        message.success("用户信息更新成功");
+    if (res) {
+      if (res.status === 201 || res.status === 200) {
+        const { message: msg, data } = res.data;
+        if (msg === "success") {
+          message.success("用户信息更新成功");
+
+          //更新本地userInfo
+          const userInfo = localStorage.getItem("user_info");
+          if (userInfo) {
+            const info = JSON.parse(userInfo);
+            info.headPic = values.headPic;
+            info.nickName = values.nickName;
+
+            localStorage.setItem("user_info", JSON.stringify(info));
+          }
+          form.resetFields();
+          query();
+        } else {
+          message.error(data);
+        }
       } else {
-        message.error(data);
+        message.error("系统繁忙，请稍后再试");
       }
-    } else {
-      message.error("系统繁忙，请稍后再试");
     }
   }, []);
 
@@ -51,20 +65,20 @@ export function InfoModify() {
     }
   }, []);
 
-  useEffect(() => {
-    async function query() {
-      const res = await getUserInfo();
-      if (res) {
-        const { data } = res.data;
+  async function query() {
+    const res = await getUserInfo();
+    if (res) {
+      const { data } = res.data;
 
-        if (res.status === 201 || res.status === 200) {
-          form.setFieldValue("headPic", data.headPic);
-          form.setFieldValue("nickName", data.nickName);
-          form.setFieldValue("email", data.email);
-        }
+      if (res.status === 201 || res.status === 200) {
+        form.setFieldValue("headPic", data.headPic);
+        form.setFieldValue("nickName", data.nickName);
+        form.setFieldValue("email", data.email);
       }
     }
+  }
 
+  useEffect(() => {
     query();
   }, []);
 

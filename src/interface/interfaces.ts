@@ -19,7 +19,7 @@ const axiosInstance = axios.create({
 axiosInstance.interceptors.request.use(function (config) {
   const accessToken = localStorage.getItem("access_token");
 
-  if (accessToken) {
+  if (accessToken && accessToken !== undefined) {
     config.headers.authorization = "Bearer " + accessToken;
   }
   return config;
@@ -44,7 +44,11 @@ axiosInstance.interceptors.response.use(
         }, 1500);
       }
     } else {
-      return error.response;
+      if (data.code === 400) {
+        message.error(data.data);
+      } else {
+        return Promise.reject(error.response); // 将错误抛出
+      }
     }
   }
 );
@@ -52,11 +56,11 @@ axiosInstance.interceptors.response.use(
 async function refreshToken() {
   const res = await axiosInstance.get("/user/admin/refresh", {
     params: {
-      refresh_token: localStorage.getItem("refresh_token"),
+      refreshToken: localStorage.getItem("refresh_token"),
     },
   });
-  localStorage.setItem("access_token", res.data.access_token);
-  localStorage.setItem("refresh_token", res.data.refresh_token);
+  localStorage.setItem("access_token", res.data.data.access_token);
+  localStorage.setItem("refresh_token", res.data.data.refresh_token);
   return res;
 }
 
@@ -210,4 +214,8 @@ export async function reject(id: number) {
 
 export async function unbind(id: number) {
   return await axiosInstance.get("/booking/unbind/" + id);
+}
+
+export async function presignedUrl(fileName: string) {
+  return axiosInstance.get(`/minio/presignedUrl?name=${fileName}`);
 }
